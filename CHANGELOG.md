@@ -11,6 +11,9 @@
 - One shared Jax line for the whole app (`JaxClient.shared`), so the watch relay and the screen use the same connection.
 - The hello Jax says on connect no longer gets glued to the front of the next answer.
 
+### Shipped
+- Build 1.0 (4) uploaded at 6:40 PM Eastern, status Testing in the internal TestFlight group "Drey".
+
 ### Not shipped
 - The watch app is not in this build. Building it needs the watchOS simulator runtime (about 4 GB) and the Mac has about 8 GB free. The code compiles; it has never run on a watch.
 
