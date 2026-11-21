@@ -1,0 +1,19 @@
+flowchart LR
+  subgraph phone["iPhone: Jax app (native)"]
+    btn["Hold to talk<br/>or hands-free"] --> ears["SpeechIn.swift<br/>Apple speech recognition"]
+    ears -- "text" --> client["JaxClient.swift<br/>live line, auto reconnect"]
+    client -- "MP3 pieces" --> voice["AudioOut.swift<br/>speaker"]
+    client --> orb["OrbView.swift<br/>orb and words on screen"]
+    client -. "no answer" .-> fail["Can't reach Jax<br/>retries, Try again"]
+    client --> hist["History.swift<br/>saved on the phone"]
+    status["Status and Connections<br/>/dashboard and /connectors pages"]
+  end
+  subgraph tail["Tailscale (private network)"]
+    serve["Tailscale Serve<br/>https :8443"]
+  end
+  subgraph pc["Closet PC"]
+    server["Orb server :8340<br/>/ws/voice (Windows)"] --> jax["Jax brain :8642<br/>(WSL distro vps)"]
+  end
+  client <-- "text out, voice back" --> serve
+  status --> serve
+  serve --> server

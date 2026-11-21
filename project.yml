@@ -1,0 +1,52 @@
+name: Jax
+options:
+  bundleIdPrefix: com.dreythomas
+  deploymentTarget:
+    iOS: "18.0"
+    watchOS: "11.0"
+settings:
+  base:
+    DEVELOPMENT_TEAM: ABCDE12345
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "4"
+targets:
+  JaxWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - Watch
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dreythomas.jax.watchkitapp
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_CFBundleDisplayName: Jax
+        INFOPLIST_KEY_WKApplication: YES
+        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.dreythomas.jax
+  Jax:
+    type: application
+    platform: iOS
+    sources:
+      - Sources
+      - Assets.xcassets
+    # Watch app is written but not shipped yet: building it needs the watchOS
+    # simulator runtime (about 4 GB, `xcodebuild -downloadPlatform watchOS`).
+    # To ship it, uncomment the two lines below.
+    # dependencies:
+    #   - target: JaxWatch
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dreythomas.jax
+        CODE_SIGN_STYLE: Automatic
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Jax
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: Jax listens to your voice so you can talk to it.
+        INFOPLIST_KEY_NSSpeechRecognitionUsageDescription: Jax turns what you say into text so it can answer you.
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+        INFOPLIST_KEY_UIUserInterfaceStyle: Dark

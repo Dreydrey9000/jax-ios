@@ -1,0 +1,9 @@
+build/
+DerivedData/
+*.xcodeproj/
+*.xcarchive
+*.ipa
+.DS_Store
+.env*
+*.p8
+ExportOptions.plist
