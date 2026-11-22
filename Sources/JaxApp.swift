@@ -130,6 +130,7 @@ struct TalkScreen: View {
         case .ready: return jax.handsFree ? "Listening" : "Ready"
         case .hearing: return "Listening"
         case .thinking: return "Thinking"
+        case .searching: return jax.searchLabel.isEmpty ? "Searching" : jax.searchLabel
         case .speaking: return "Speaking"
         }
     }
@@ -209,7 +210,7 @@ struct TalkScreen: View {
             Button { jax.retryNow() } label: { pill("Try again", icon: "arrow.clockwise", filled: true) }
         } else {
             pill(buttonTitle, icon: pressed ? "waveform" : "mic.fill",
-                 filled: !pressed && jax.phase != .thinking && jax.phase != .connecting)
+                 filled: !pressed && jax.phase != .thinking && jax.phase != .searching && jax.phase != .connecting)
                 .scaleEffect(pressed ? 0.96 : 1)
                 .animation(.spring(response: 0.25, dampingFraction: 0.7), value: pressed)
                 .animation(.easeOut(duration: 0.2), value: jax.phase)

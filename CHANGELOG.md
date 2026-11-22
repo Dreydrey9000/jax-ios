@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026-11-21] Build 6: searching animation
+
+### Added
+- A Searching look for the orb: a bright band sweeps down the sphere and three small orbs circle it with fading tails. The caption says Searching, or what Jax is looking through when the PC says. Why: Drey asked to see when Jax is looking something up instead of a silent wait.
+- It shows when the PC says Jax is searching, and also on its own after 2.5 seconds of thinking, so it works even if the PC says nothing.
+- Messages shows "Searching…" in the waiting bubble.
+
+### Verified
+- Simulator: a memory question showed the Searching orb and caption. Not verified on the real phone.
+
 ## [2026-11-21] Build 5: Jax on Apple Watch
 
 ### Added

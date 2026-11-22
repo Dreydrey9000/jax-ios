@@ -100,8 +100,8 @@ struct MessagesView: View {
                             bubble(turn.you, mine: true)
                             if !turn.jax.isEmpty {
                                 bubble(turn.jax, mine: false)
-                            } else if turn.id == store.turns.last?.id, jax.phase == .thinking {
-                                bubble("Thinking…", mine: false).opacity(0.6)
+                            } else if turn.id == store.turns.last?.id, jax.phase == .thinking || jax.phase == .searching {
+                                bubble(jax.phase == .searching ? "Searching…" : "Thinking…", mine: false).opacity(0.6)
                             }
                         }
                     }

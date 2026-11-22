@@ -46,6 +46,7 @@ struct OrbView: View {
         case .ready: return Style(spin: 0.03, swell: 0.012, bright: 0.85, tint: Look.sky)
         case .hearing: return Style(spin: 0.05, swell: 0.05, bright: 1.0, tint: Look.sky)
         case .thinking: return Style(spin: 0.20, swell: 0.035, bright: 0.95, tint: Look.sky, size: 0.86)
+        case .searching: return Style(spin: 0.14, swell: 0.02, bright: 0.95, tint: Look.sky, size: 0.80)
         case .speaking: return Style(spin: 0.07, swell: 0.05, bright: 1.0, tint: Look.sky)
         }
     }
@@ -57,7 +58,7 @@ struct OrbView: View {
         let half = min(size.width, size.height) / 2
         let calm = reduceMotion ? 0.25 : 1.0
         // Thinking pulls the orb inward and lets it breathe, so it reads as busy at a glance.
-        let breath = phase == .thinking ? sin(time * 3.2) * 0.03 * calm : 0
+        let breath = phase == .thinking || phase == .searching ?sin(time * 3.2) * 0.03 * calm : 0
         let radius = half * 0.70 * (s.size + breath) * (1 + level * 0.12 * calm)
 
         // Glow behind the sphere. Fades to nothing before the edge of the view,
@@ -82,6 +83,10 @@ struct OrbView: View {
         var far = Path()
         var mid = Path()
         var near = Path()
+        // Searching: a bright band sweeps the sphere top to bottom, like a scan line.
+        var scan = Path()
+        let searching = phase == .searching
+        let band = sin(time * 1.7)
         for (i, p) in Self.points.enumerated() {
             // A slow wave travelling over the surface, so the sphere feels alive.
             let wave = sin(p.y * 4 + time * 1.4 + Double(i % 5) * 0.6) * swell
@@ -97,6 +102,7 @@ struct OrbView: View {
             let rect = CGRect(x: center.x + x * radius * scale - dot / 2,
                               y: center.y - y * radius * scale - dot / 2, width: dot, height: dot)
             if depth < 0.42 { far.addEllipse(in: rect) } else if depth < 0.76 { mid.addEllipse(in: rect) } else { near.addEllipse(in: rect) }
+            if searching, abs(p.y - band) < 0.09 { scan.addEllipse(in: rect.insetBy(dx: -0.4 * unit, dy: -0.4 * unit)) }
         }
 
         // Bloom: the same points, blurred and added as light. This is the
@@ -113,8 +119,28 @@ struct OrbView: View {
         context.fill(near, with: .color(s.tint.opacity(0.95 * s.bright)))
         context.fill(near, with: .color(Color.white.opacity(0.45 * s.bright)))
 
+        if searching {
+            context.fill(scan, with: .color(Color.white.opacity(0.9)))
+            // Three small orbs circle the big one on tilted rings, each with a fading tail:
+            // Jax sending out for answers.
+            for n in 0..<3 {
+                let ringTilt = Double(n) * 1.05 + 0.4
+                let speed = (1.5 + Double(n) * 0.35) * calm
+                for step in 0..<14 {
+                    let a = time * speed + Double(n) * 2.1 - Double(step) * 0.07
+                    let ox = cos(a), oz = sin(a)
+                    let px = ox * cos(ringTilt) * radius * 1.28
+                    let py = (ox * sin(ringTilt) * 0.9 + oz * 0.35) * radius * 1.28
+                    let fade = 1 - Double(step) / 14
+                    let r = (step == 0 ? 5.0 : 3.2 * fade) * unit * (0.75 + (oz + 1) * 0.25)
+                    context.fill(Path(ellipseIn: CGRect(x: center.x + px - r, y: center.y - py - r, width: r * 2, height: r * 2)),
+                                 with: .color((step == 0 ? Color.white : s.tint).opacity(step == 0 ? 0.95 : 0.6 * fade)))
+                }
+            }
+        }
+
         // Bright heart of the orb.
-        let coreR = radius * ((phase == .thinking ? 0.55 : 0.34) + level * 0.3)
+        let coreR = radius * ((phase == .thinking || searching ? 0.55 : 0.34) + level * 0.3)
         context.fill(
             Path(ellipseIn: CGRect(x: center.x - coreR, y: center.y - coreR, width: coreR * 2, height: coreR * 2)),
             with: .radialGradient(

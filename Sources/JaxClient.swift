@@ -17,6 +17,7 @@ enum Phase: Equatable {
     case ready
     case hearing
     case thinking
+    case searching // thinking has gone on a while: Jax is looking something up
     case speaking
 }
 
@@ -31,6 +32,7 @@ final class JaxClient: NSObject, ObservableObject, URLSessionWebSocketDelegate {
     @Published private(set) var reply = ""
     @Published private(set) var notice = ""
     @Published private(set) var hint = ""
+    @Published private(set) var searchLabel = "" // what Jax is looking through, when the PC says
     @Published var handsFree = UserDefaults.standard.bool(forKey: "handsFree") {
         didSet {
             UserDefaults.standard.set(handsFree, forKey: "handsFree")
@@ -281,6 +283,10 @@ final class JaxClient: NSObject, ObservableObject, URLSessionWebSocketDelegate {
                 if awaitingAnswer { reply = "" }
                 awaitingAnswer = false
                 setPhase(.thinking)
+            case "searching":
+                awaitingAnswer = false
+                searchLabel = (msg["label"] as? String) ?? ""
+                setPhase(.searching)
             case "speaking":
                 awaitingAnswer = false
                 setPhase(.speaking)
@@ -293,7 +299,7 @@ final class JaxClient: NSObject, ObservableObject, URLSessionWebSocketDelegate {
                 // An "idle" from before the sentence landed. Wait for Jax to pick
                 // it up, but never sit on "Thinking" for ever if it decides not to answer.
                 DispatchQueue.main.asyncAfter(deadline: .now() + 4) { [weak self] in
-                    guard let self, self.awaitingAnswer, self.phase == .thinking else { return }
+                    guard let self, self.awaitingAnswer, self.phase == .thinking || self.phase == .searching else { return }
                     self.awaitingAnswer = false
                     self.setPhase(.ready)
                 }
@@ -406,6 +412,13 @@ final class JaxClient: NSObject, ObservableObject, URLSessionWebSocketDelegate {
         turnID = history.add(you: said)
         awaitingAnswer = true
         phase = .thinking // shown at once; Jax confirms a moment later
+        searchLabel = ""
+        // Still thinking after 2.5 seconds means a lookup. Show it, even if the PC does not say so.
+        let turn = turnID
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in
+            guard let self, self.turnID == turn, self.phase == .thinking else { return }
+            self.phase = .searching
+        }
         send(["type": "transcript", "text": said, "isFinal": true])
         syncListening()
     }
