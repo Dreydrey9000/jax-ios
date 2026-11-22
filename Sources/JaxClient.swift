@@ -260,14 +260,18 @@ final class JaxClient: NSObject, ObservableObject, URLSessionWebSocketDelegate {
         case "audio":
             guard let b64 = msg["data"] as? String, let mp3 = Data(base64Encoded: b64),
                   let utt = (msg["utt"] as? NSNumber)?.intValue, let idx = (msg["idx"] as? NSNumber)?.intValue else { return }
-            if let words = msg["text"] as? String, !words.isEmpty { addReply(words) }
+            // Sound that arrives while Jax is still searching is its "one moment" line:
+            // play it, but it is not the answer and the search is not over. The PC
+            // says "speaking" before the real answer starts.
+            let holdingLine = phase == .searching
+            if let words = msg["text"] as? String, !words.isEmpty, !holdingLine { addReply(words) }
             if holding || quiet { // you are talking over it, or reading the answer instead
                 awaitingAnswer = false
                 send(["type": "played", "utt": utt, "idx": idx])
                 return
             }
             awaitingAnswer = false
-            setPhase(.speaking)
+            if !holdingLine { setPhase(.speaking) }
             voice.enqueue(mp3, utt: utt, idx: idx)
         case "stop":
             voice.stop()

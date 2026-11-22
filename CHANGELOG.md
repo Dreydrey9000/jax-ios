@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026-11-21] Build 7: works with Jax's "one moment" line
+
+### Fixed
+- Jax now says a short line such as "Let me check, sir." when it starts a lookup. The app plays it and stays on Searching, instead of flipping to Speaking and dropping the animation. The line is kept out of the saved answer. Why: build 6 was made before that line existed on the PC.
+
 ## [2026-11-21] Build 6: searching animation
 
 ### Added
