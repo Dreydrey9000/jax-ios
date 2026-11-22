@@ -4,6 +4,38 @@ Talk to Jax from your phone. Hold the button, speak, let go. Jax answers out lou
 
 **Explain it in a meeting:** the app is a native iPhone screen with one live line to Jax on the closet PC. The phone turns your voice into text with Apple's own speech recognition, sends the text to Jax, and plays Jax's voice back as it arrives.
 
+<p>
+  <img src="docs/screenshots/phone-searching.png" width="250" alt="Jax searching its memory, orb glowing">
+  <img src="docs/screenshots/phone-running-command.png" width="250" alt="Jax running a terminal command">
+  <img src="docs/screenshots/watch-answer.png" width="200" alt="Jax answering on an Apple Watch">
+</p>
+
+*Real screens from build 7: searching memory, running a command on the PC, and answering on the watch.*
+
+## Why this exists
+
+Jax is a personal AI assistant that lives on a computer at home (the closet PC). It remembers past conversations, runs commands, and reaches connected apps. Before this app, you could only talk to it at the desk. This app puts Jax in your pocket and on your wrist: hold a button, talk, hear the answer.
+
+The point is one assistant everywhere, running on hardware you own, with your data staying at home.
+
+## Where it's going
+
+| Next | What it adds |
+|---|---|
+| Final app icon | Shortlist from the 50-idea board: 1, 5, 8, 14, 38 (dark with sky blue). |
+| "Still thinking" voice line | Jax says a short line when a hard question takes more than about 8 seconds, so silence never feels broken. |
+| New first screen | Two looks in the works, inspired by Hark and Grok. |
+| Settings screen | Point the app at your own Jax server instead of a hardcoded address. Needed before others can use it. |
+| Lock screen and Siri | Start a talk from the Action button, a widget, or "Hey Siri, ask Jax". |
+| Background listening | Keep a conversation going with the screen off, like a phone call. |
+| Watch on its own | Talk to Jax from the watch without the phone, once there's a safe public route to Jax. |
+| Proactive Jax | Jax pings you first: reminders, finished jobs, morning brief. |
+| Photos and files | Show Jax a picture or a document and ask about it. |
+
+## Continue this in any AI
+
+Everything needed to pick this up lives in this repo. Point any coding AI (Claude, Codex, Cursor, Grok) at [AGENTS.md](AGENTS.md) first. It explains the project, the rules, and how to build and ship.
+
 ```mermaid
 flowchart LR
   subgraph phone["iPhone: Jax app (native)"]

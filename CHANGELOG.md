@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026-11-21] Repo on GitHub
+
+### Added
+- Private GitHub repo, so the project can be continued in any AI and later open-sourced.
+- Real screenshots (phone and watch), "Why this exists" and "Where it's going" sections in the README.
+- `AGENTS.md`: the start-here file for any coding AI. `OPEN-SOURCE.md`: what to swap before going public.
+
 ## [2026-11-21] Build 7: works with Jax's "one moment" line
 
 ### Fixed
