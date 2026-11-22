@@ -18,6 +18,12 @@ final class Phone: NSObject, ObservableObject, WCSessionDelegate {
         super.init()
         WCSession.default.delegate = self
         WCSession.default.activate()
+        #if DEBUG
+        // Test switch: `-JaxSay "hello"` asks without touching the screen.
+        if let line = UserDefaults.standard.string(forKey: "JaxSay") {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) { self.ask(line) }
+        }
+        #endif
     }
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {}
@@ -28,6 +34,11 @@ final class Phone: NSObject, ObservableObject, WCSessionDelegate {
         said = words
         answer = ""
         busy = true
+        send(words, triesLeft: 2)
+    }
+
+    /// The link to the phone can take a moment to wake, so one miss gets a second try.
+    private func send(_ words: String, triesLeft: Int) {
         WCSession.default.sendMessage(["say": words], replyHandler: { reply in
             DispatchQueue.main.async {
                 self.answer = (reply["text"] as? String) ?? ""
@@ -35,7 +46,8 @@ final class Phone: NSObject, ObservableObject, WCSessionDelegate {
                 WKInterfaceDevice.current().play(.success)
             }
         }, errorHandler: { _ in
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                if triesLeft > 0 { self.send(words, triesLeft: triesLeft - 1); return }
                 self.answer = "Can't reach your iPhone. Keep it nearby with Tailscale on."
                 self.busy = false
                 WKInterfaceDevice.current().play(.failure)

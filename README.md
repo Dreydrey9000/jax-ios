@@ -38,7 +38,7 @@ Diagram source: [docs/diagrams/architecture.mmd](docs/diagrams/architecture.mmd)
 | Words on screen | What Jax heard you say, then Jax's answer as text while it speaks. |
 | Messages | Menu, top right. The whole conversation as chat bubbles, with a box to type in. Jax answers in text only while it is open. Its menu has "Text Jax in iMessage". Kept on this phone only. |
 | On a Mac | Open TestFlight on an Apple silicon Mac and install Jax. It is the same iPhone build in a window. |
-| On a watch | Written, not shipped. See `Watch/JaxWatchApp.swift` and the note in `project.yml`. |
+| On a watch | Installs with the phone app. Tap Talk to Jax, dictate, read the answer. The phone must be nearby with Tailscale on, because the watch talks to Jax through it. |
 | Connections | Menu, top right. The PC's connectors page, where you add apps for Jax to use. |
 | Status | Menu, top right. Opens the Jax dashboard. |
 | Can't reach Jax | Shown when the PC or Tailscale does not answer. The app keeps retrying on its own, and there is a Try again button. |

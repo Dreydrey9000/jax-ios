@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026-11-21] Build 5: Jax on Apple Watch
+
+### Added
+- The watch app now ships inside the phone app. Tap Talk to Jax, dictate, and the answer shows as text with a tap on the wrist. Why through the phone: Apple does not let Tailscale run on a watch.
+- The watch tries a second and third time if the phone link is still waking up.
+
+### Verified
+- Paired simulators (Apple Watch Series 11 and iPhone 17 Pro): the watch sent a question, the phone asked Jax, the answer came back in about 9 seconds.
+- Not verified: a real watch, and the phone app being asleep in a pocket when the watch asks.
+
+### Known limit
+- If the phone app has only just opened, Jax's hello can end up on the end of the watch answer.
+
 ## [2026-11-21] Build 4: Messages, Mac, watch groundwork
 
 ### Added
