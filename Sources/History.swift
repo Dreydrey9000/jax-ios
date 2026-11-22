@@ -58,8 +58,12 @@ final class HistoryStore: ObservableObject {
     }
 }
 
-/// Jax's own iMessage number. Texting it reaches the same Jax, from the Messages app.
-private let jaxTextLine = URL(string: "sms:+15555550123")!
+/// Jax's own iMessage number, from JAX_TEXT_NUMBER in Config/*.xcconfig.
+/// Empty means no text line, and the menu item is hidden.
+private let jaxTextLine: URL? = {
+    let n = (Bundle.main.object(forInfoDictionaryKey: "JaxTextNumber") as? String ?? "").trimmingCharacters(in: .whitespaces)
+    return n.isEmpty ? nil : URL(string: "sms:\(n)")
+}()
 
 /// Everything you and Jax said, spoken or typed, oldest first, with a box to type in.
 /// While this is open Jax answers in text only.
@@ -120,7 +124,9 @@ struct MessagesView: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Menu {
-                    Button { openURL(jaxTextLine) } label: { Label("Text Jax in iMessage", systemImage: "message") }
+                    if let line = jaxTextLine {
+                        Button { openURL(line) } label: { Label("Text Jax in iMessage", systemImage: "message") }
+                    }
                     Button(role: .destructive) { confirmClear = true } label: { Label("Clear this list", systemImage: "trash") }
                 } label: {
                     Image(systemName: "ellipsis.circle").accessibilityLabel("More")

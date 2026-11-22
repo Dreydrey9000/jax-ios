@@ -1,5 +1,14 @@
 # Changelog
 
+## [2026-11-21] Open source
+
+### Changed
+- Team ID, bundle ID, server address and Jax's text number moved out of the code into `Config/Local.xcconfig`, which is not committed. Why: the repo is now public and anyone can build it with their own values.
+- "Text Jax in iMessage" is hidden when no number is set.
+
+### Added
+- MIT license.
+
 ## [2026-11-21] Repo on GitHub
 
 ### Added

@@ -1,12 +1,13 @@
 name: Jax
 options:
-  bundleIdPrefix: com.dreythomas
   deploymentTarget:
     iOS: "18.0"
     watchOS: "11.0"
+configFiles:
+  Debug: Config/Config.xcconfig
+  Release: Config/Config.xcconfig
 settings:
   base:
-    DEVELOPMENT_TEAM: ABCDE12345
     SWIFT_VERSION: "5.0"
     MARKETING_VERSION: "1.0"
     CURRENT_PROJECT_VERSION: "7"
@@ -18,13 +19,13 @@ targets:
       - Watch
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.dreythomas.jax.watchkitapp
+        PRODUCT_BUNDLE_IDENTIFIER: $(JAX_BUNDLE_ID).watchkitapp
         CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_CFBundleDisplayName: Jax
         INFOPLIST_KEY_WKApplication: YES
-        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.dreythomas.jax
+        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: $(JAX_BUNDLE_ID)
   Jax:
     type: application
     platform: iOS
@@ -35,9 +36,15 @@ targets:
     # simulator runtime once: `xcodebuild -downloadPlatform watchOS`.
     dependencies:
       - target: JaxWatch
+    # Custom keys merged into the generated Info.plist. Values come from Config/*.xcconfig.
+    info:
+      path: Config/Jax-Info.plist
+      properties:
+        JaxServerURL: $(JAX_SERVER_URL)
+        JaxTextNumber: $(JAX_TEXT_NUMBER)
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.dreythomas.jax
+        PRODUCT_BUNDLE_IDENTIFIER: $(JAX_BUNDLE_ID)
         CODE_SIGN_STYLE: Automatic
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

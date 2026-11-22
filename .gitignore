@@ -7,3 +7,4 @@ DerivedData/
 .env*
 *.p8
 ExportOptions.plist
+Config/Local.xcconfig

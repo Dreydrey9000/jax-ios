@@ -25,7 +25,7 @@ The point is one assistant everywhere, running on hardware you own, with your da
 | Final app icon | Shortlist from the 50-idea board: 1, 5, 8, 14, 38 (dark with sky blue). |
 | "Still thinking" voice line | Jax says a short line when a hard question takes more than about 8 seconds, so silence never feels broken. |
 | New first screen | Two looks in the works, inspired by Hark and Grok. |
-| Settings screen | Point the app at your own Jax server instead of a hardcoded address. Needed before others can use it. |
+| Settings screen | Change the Jax server inside the app, instead of at build time. |
 | Lock screen and Siri | Start a talk from the Action button, a widget, or "Hey Siri, ask Jax". |
 | Background listening | Keep a conversation going with the screen off, like a phone call. |
 | Watch on its own | Talk to Jax from the watch without the phone, once there's a safe public route to Jax. |
@@ -78,8 +78,8 @@ Diagram source: [docs/diagrams/architecture.mmd](docs/diagrams/architecture.mmd)
 ## What must be true for it to work
 
 1. Tailscale is installed on the phone and says Connected.
-2. The closet PC (`YOUR-PC`) is on and someone is signed in. After a restart nothing answers until a sign-in.
-3. The orb server is published at `https://your-jax-host:8443/` (Tailscale Serve).
+2. The home PC running Jax is on and someone is signed in. After a restart nothing answers until a sign-in.
+3. The orb server is published on your tailnet with Tailscale Serve, and its address is set as `JAX_SERVER_URL` (see Build and run).
 
 The app talks only to that address. It is not reachable from the public internet.
 
@@ -112,6 +112,7 @@ What the app cannot speed up: Jax's own thinking time on the PC. That is the gap
 | File | Job |
 |---|---|
 | `project.yml` | The whole Xcode project, as text. `xcodegen` turns it into `Jax.xcodeproj`. |
+| `Config/Config.xcconfig` | Safe default settings. Your own values go in `Config/Local.xcconfig`. |
 | `Sources/JaxApp.swift` | The talk screen and the server address. |
 | `Sources/JaxClient.swift` | The live line to Jax: connect, reconnect, send words, track thinking and speaking. |
 | `Sources/SpeechIn.swift` | Microphone and speech recognition, hold-to-talk and hands-free. |
@@ -127,8 +128,19 @@ What the app cannot speed up: Jax's own thinking time on the PC. That is the gap
 
 Needs Xcode 26 and `xcodegen` (`brew install xcodegen`).
 
+First, your own settings. Create `Config/Local.xcconfig` (it is not committed) with your values:
+
+```
+DEVELOPMENT_TEAM = ABCDE12345
+JAX_BUNDLE_ID = com.yourname.jax
+JAX_SERVER_URL = https:/$()/your-jax-host:8443/
+JAX_TEXT_NUMBER = +15555550123
+```
+
+`JAX_TEXT_NUMBER` is optional. Leave it out and the "Text Jax in iMessage" item is hidden. The `$()` in the URL is needed because xcconfig files treat `//` as a comment.
+
 ```bash
-cd ~/My\ Apps/jax-ios && xcodegen generate
+xcodegen generate
 ```
 
 ```bash
@@ -151,14 +163,14 @@ Test switches (launch arguments, debug builds):
 3. In the Organizer window: Distribute App, TestFlight Internal Only, Upload.
 4. In App Store Connect, TestFlight tab: add the build to an internal group.
 
-Settings used: team `ABCDE12345`, bundle ID `com.dreythomas.jax`, automatic signing. No secrets or keys live in this repo.
+Team, bundle ID and server address come from `Config/Local.xcconfig`. Signing is automatic. No secrets or keys live in this repo.
 
 ## Known limits
 
 - Speech recognition cannot be tested in the Simulator (Apple ships no speech model there, error `kLSRErrorDomain 300`). It needs a real iPhone.
 - Hands-free does not listen while Jax is speaking. Hold the button to interrupt.
 - The app listens only while it is open and on screen.
-- One hardcoded server address. Add a settings screen if a second one ever exists.
+- The server address is set at build time. A settings screen inside the app would let one build talk to any Jax.
 
 ## Troubleshooting
 
@@ -167,4 +179,8 @@ Settings used: team `ABCDE12345`, bundle ID `com.dreythomas.jax`, automatic sign
 | Can't reach Jax | Open Tailscale on the phone. Check the PC is on and signed in. Tap Try again. |
 | The PC answered, but Jax is not running | The orb server on the PC is down. From the Mac: `jax-pc open`. |
 | It never hears you | Settings, Jax: turn on Microphone and Speech Recognition. |
-| Need the phone's logs | Connect the phone, open Console on the Mac, filter by `com.dreythomas.jax`. The PC's orb log also gets a line for each step, starting `mic: ios:`. |
+| Need the phone's logs | Connect the phone, open Console on the Mac, filter by your bundle ID. The PC's orb log also gets a line for each step, starting `mic: ios:`. |
+
+## License
+
+MIT. See [LICENSE](LICENSE). The app is one half of Jax: the brain and orb server that run on the PC are a separate project.

@@ -24,6 +24,6 @@ The PC side (orb server, Jax brain) is **not** in this repo. This repo is the ph
 - Test on a real iPhone for speech. The Simulator has no speech model (use the `-JaxSay` launch argument there).
 - Plain-English labels in the UI. No em-dashes in any text.
 
-## Before open-sourcing
+## Open source
 
-See [OPEN-SOURCE.md](OPEN-SOURCE.md). A few personal values are still hardcoded.
+Personal values live in `Config/Local.xcconfig` (never commit it). See [OPEN-SOURCE.md](OPEN-SOURCE.md).

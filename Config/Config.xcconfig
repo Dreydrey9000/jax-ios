@@ -1,0 +1,14 @@
+// Build settings for Jax. These defaults let anyone build it.
+// Put your own values in Config/Local.xcconfig (not committed), for example:
+//   DEVELOPMENT_TEAM = ABCDE12345
+//   JAX_BUNDLE_ID = com.yourname.jax
+//   JAX_SERVER_URL = https:/$()/your-jax-host:8443/
+//   JAX_TEXT_NUMBER = +15555550123
+// The odd "$()" stops xcconfig reading "//" in a URL as a comment.
+
+DEVELOPMENT_TEAM =
+JAX_BUNDLE_ID = com.example.jax
+JAX_SERVER_URL = https:/$()/your-jax-host:8443/
+JAX_TEXT_NUMBER =
+
+#include? "Local.xcconfig"

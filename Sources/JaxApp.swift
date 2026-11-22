@@ -1,12 +1,13 @@
 import SwiftUI
 
 /// Where Jax lives. Tailscale only: the phone must be on the tailnet.
-/// ponytail: one hardcoded host. Override for testing with the launch
-/// argument `-JaxURL <url>`; add a settings screen when there is a second host.
+/// The address comes from JAX_SERVER_URL in Config/*.xcconfig (via Info.plist).
+/// Override for testing with the launch argument `-JaxURL <url>`.
 enum JaxHost {
     static let base: URL = {
         if let s = UserDefaults.standard.string(forKey: "JaxURL"), let u = URL(string: s) { return u }
-        return URL(string: "https://your-jax-host:8443/")!
+        let s = Bundle.main.object(forInfoDictionaryKey: "JaxServerURL") as? String ?? ""
+        return URL(string: s) ?? URL(string: "https://your-jax-host:8443/")!
     }()
     static var dashboard: URL { base.appendingPathComponent("dashboard") }
     static var connectors: URL { base.appendingPathComponent("connectors") }
